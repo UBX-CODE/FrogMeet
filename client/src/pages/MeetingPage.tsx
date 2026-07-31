@@ -39,9 +39,13 @@ const ParticipantVideo = ({ participant, className = "" }: { participant: any, c
           className={`h-full w-full object-cover ${participant.isLocal ? 'scale-x-[-1]' : ''}`}
         />
       ) : (
-        <div className="flex h-full w-full flex-col items-center justify-center bg-gradient-to-br from-zinc-800 to-zinc-900">
-           <div className="flex h-20 w-20 sm:h-28 sm:w-28 items-center justify-center rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 text-3xl sm:text-5xl font-semibold text-white shadow-lg">
-             {participant.name.charAt(0).toUpperCase()}
+        <div className="flex h-full w-full flex-col items-center justify-center bg-[#F4F0E6] group overflow-hidden border-[4px] border-black">
+           {/* Frog Avatar */}
+           <div className="flex h-20 w-20 sm:h-28 sm:w-28 flex-col items-center justify-center rounded-t-full bg-[#00C853] text-2xl sm:text-4xl font-semibold text-black shadow-[6px_6px_0_0_rgba(0,0,0,1)] relative border-[3px] border-black transition-transform group-hover:scale-110 mt-6">
+             <div className="absolute -top-4 left-0 w-8 h-8 bg-white rounded-full border-[3px] border-black flex items-center justify-center"><div className="w-3 h-3 bg-black rounded-full mt-1"></div></div>
+             <div className="absolute -top-4 right-0 w-8 h-8 bg-white rounded-full border-[3px] border-black flex items-center justify-center"><div className="w-3 h-3 bg-black rounded-full mt-1"></div></div>
+             <div className="z-10">{participant.name.charAt(0).toUpperCase()}</div>
+             <div className="absolute bottom-3 w-10 h-4 bg-black rounded-b-full flex justify-center overflow-hidden"><div className="w-4 h-3 bg-[#FF0055] rounded-t-full translate-y-2 group-hover:translate-y-1 transition-transform"></div></div>
            </div>
         </div>
       )}
@@ -362,7 +366,7 @@ export default function MeetingPage() {
               <span className="w-2 h-2 rounded-full bg-green-500"></span>
               {roomId}
            </div>
-           <button className="flex items-center gap-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-700 rounded-full text-sm font-medium transition-colors shadow-lg shadow-indigo-500/20">
+           <button className="flex items-center gap-2 px-4 py-2 bg-[#00C853] hover:bg-[#00E676] text-black border-[2px] border-black rounded-full text-sm font-bold transition-all shadow-[4px_4px_0_0_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1">
              <Share size={16} />
              <span className="hidden sm:inline">Share Link</span>
            </button>
@@ -391,7 +395,9 @@ export default function MeetingPage() {
               {activeTab === 'chat' ? (
                 <>
                   <div className="flex gap-3">
-                     <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-500 shrink-0"></div>
+                     <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#00C853] to-[#00E676] border-[2px] border-black shrink-0 flex items-center justify-center">
+                       <div className="w-4 h-1 bg-black rounded-b-full"></div>
+                     </div>
                      <div>
                        <div className="text-sm font-medium">Maddison Beer</div>
                        <div className="text-sm text-white/70 bg-white/5 p-2 rounded-lg rounded-tl-none mt-1">Hello Guyss👋<br/>Glad to see you again!</div>
@@ -410,7 +416,7 @@ export default function MeetingPage() {
                   {allParticipants.map(p => (
                     <div key={p.id} className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 text-xs font-semibold text-white">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-tr from-[#00C853] to-[#00E676] border-[2px] border-black text-xs font-bold text-black">
                            {p.name.charAt(0).toUpperCase()}
                         </div>
                         <span className="text-sm font-medium">{p.name} {p.isLocal ? "(You)" : ""}</span>
@@ -433,7 +439,7 @@ export default function MeetingPage() {
                     placeholder="Type a message..." 
                     className="w-full bg-black/40 border border-white/10 rounded-full py-2.5 pl-4 pr-10 text-sm focus:outline-none focus:border-indigo-500 transition-colors"
                   />
-                  <button className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-indigo-600 rounded-full hover:bg-indigo-700 transition-colors">
+                  <button className="absolute right-2 top-1/2 -translate-y-1/2 p-1.5 bg-[#00C853] text-black border-[2px] border-black rounded-full hover:bg-[#00E676] transition-colors">
                     <Send size={14} />
                   </button>
                 </div>
@@ -468,14 +474,14 @@ export default function MeetingPage() {
 
            <button 
              onClick={() => toggleSidebar('participants')}
-             className={`flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full transition-all ${isSidebarOpen && activeTab === 'participants' ? 'bg-indigo-600 text-white' : 'bg-white/10 hover:bg-white/20 text-white'}`}
+             className={`flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full transition-all ${isSidebarOpen && activeTab === 'participants' ? 'bg-[#00C853] text-black border-[2px] border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)]' : 'bg-white/10 hover:bg-white/20 text-white'}`}
            >
              <Users size={20} />
            </button>
            
            <button 
              onClick={() => toggleSidebar('chat')}
-             className={`flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full transition-all ${isSidebarOpen && activeTab === 'chat' ? 'bg-indigo-600 text-white' : 'bg-white/10 hover:bg-white/20 text-white'}`}
+             className={`flex h-10 w-10 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full transition-all ${isSidebarOpen && activeTab === 'chat' ? 'bg-[#00C853] text-black border-[2px] border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)]' : 'bg-white/10 hover:bg-white/20 text-white'}`}
            >
              <MessageSquare size={20} />
            </button>

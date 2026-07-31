@@ -19,7 +19,7 @@ const io = new Server(server, {
 
 // 5. Basic test route
 app.get("/", (_req, res) => {
-  res.send("MeetFlow signaling server is running");
+  res.send("FrogMeet signaling server is running");
 });
 
 // 6. Socket.IO connection

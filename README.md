@@ -1,6 +1,6 @@
 <div align="center">
-  <img src="client/public/favicon.svg" width="120" alt="MeetFlow Logo"/>
-  <h1> MeetFlow</h1>
+  <img src="client/public/favicon.svg" width="120" alt="FrogMeet Logo"/>
+  <h1> FrogMeet</h1>
   <p><strong>A Real-Time, Neo-Brutalist Video Conferencing Platform</strong></p>
 
   <img src="client/src/assets/Calling%20Call%20Me%20GIF.gif" width="200" alt="Call Me" style="border-radius: 8px; margin: 16px auto; display: block;"/>
@@ -17,16 +17,16 @@
 
 ---
 
-## Welcome to MeetFlow
+## Welcome to FrogMeet
 
-**MeetFlow** is a modern, real-time video conferencing platform built to explore browser-based communication, peer-to-peer media streaming, and real-time collaboration. With a bold, agency-grade **neo-brutalist** design system, MeetFlow prioritizes both aesthetic impact and seamless functionality.
+**FrogMeet** is a modern, real-time video conferencing platform built to explore browser-based communication, peer-to-peer media streaming, and real-time collaboration. With a bold, agency-grade **neo-brutalist** design system, FrogMeet prioritizes both aesthetic impact and seamless functionality.
 
 > **Status:** Active Development
 
 <br>
 
 <div align="center">
-  <img src="client/public/heropage.png" alt="MeetFlow Landing Page" width="800" style="border: 4px solid #000; border-radius: 8px; box-shadow: 8px 8px 0px 0px #000;"/>
+  <img src="client/public/heropage.png" alt="FrogMeet Landing Page" width="800" style="border: 4px solid #000; border-radius: 8px; box-shadow: 8px 8px 0px 0px #000;"/>
   <br>
   <em>The sleek, modern, neo-brutalist landing experience.</em>
 </div>
@@ -37,7 +37,7 @@
 
 ## Key Features
 
-MeetFlow provides a fast and responsive meeting experience where users can:
+FrogMeet provides a fast and responsive meeting experience where users can:
 
 *  **Instant Meetings:** Start a new meeting with a single click.
 *  **Join via Code:** Easily join an active room using a unique code.
@@ -51,7 +51,7 @@ MeetFlow provides a fast and responsive meeting experience where users can:
 ## Application Flow & Screens
 
 <div align="center">
-  <img src="client/public/3.png" alt="MeetFlow Meeting Interface" width="800" style="border: 4px solid #000; border-radius: 8px; box-shadow: 8px 8px 0px 0px #000;"/>
+  <img src="client/public/3.png" alt="FrogMeet Meeting Interface" width="800" style="border: 4px solid #000; border-radius: 8px; box-shadow: 8px 8px 0px 0px #000;"/>
   <br>
   <em>Immersive video conferencing interface.</em>
 </div>
@@ -75,7 +75,7 @@ graph TD;
 
 ## Technical Architecture
 
-MeetFlow cleanly separates real-time signaling from peer-to-peer media communication.
+FrogMeet cleanly separates real-time signaling from peer-to-peer media communication.
 
 * **Signaling Layer:** Socket.IO handles connection setup (Room joins, SDP offers, ICE candidates, Disconnect events).
 * **Media Layer:** WebRTC manages direct real-time media communication (Camera, Microphone, Screen Sharing).
@@ -113,8 +113,8 @@ sequenceDiagram
 ### 1. Clone & Setup
 
 ```bash
-git clone https://github.com/UBX-CODE/MeetFlow.git
-cd MeetFlow
+git clone https://github.com/UBX-CODE/FrogMeet.git
+cd FrogMeet
 ```
 
 ### 2. Start the Frontend (Client)
@@ -139,7 +139,7 @@ npm run dev
 
 ## Current Limitations
 
-As MeetFlow is under active development, note the following:
+As FrogMeet is under active development, note the following:
 * Currently heavily focused on a peer-to-peer (mesh) architecture.
 * For very large groups, an SFU (Selective Forwarding Unit) architecture would be needed.
 * Authentication and persistent meeting histories are planned for future milestones.
