@@ -18,7 +18,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "tsx watch index.ts",
-    "build": "tsc --outDir dist --module commonjs --moduleResolution node",
+    "build": "tsc",
     "start": "node dist/index.js"
   },
   "keywords": [],
