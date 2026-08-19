@@ -9,15 +9,27 @@ const app = express();
 // 2. HTTP server create
 const server = http.createServer(app);
 
-// CLIENT_URL = your Vercel frontend URL (set in Railway env vars)
+// Use environment variable, but allow flexibility for Vercel preview URLs
 const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
 
+const corsOptions = {
+  origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    // Allow if no origin (e.g. mobile apps, curl), or if it matches the main URL, localhost, or any vercel.app preview URL
+    if (!origin || origin === CLIENT_URL || origin.includes("localhost") || origin.endsWith(".vercel.app")) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: ["GET", "POST"]
+};
+
 // 3. Express CORS configuration
-app.use(cors({ origin: CLIENT_URL }));
+app.use(cors(corsOptions));
 
 // 4. Socket.IO server create
 const io = new Server(server, {
-  cors: { origin: CLIENT_URL, methods: ["GET", "POST"] },
+  cors: corsOptions,
 });
 
 // 5. Basic test route
