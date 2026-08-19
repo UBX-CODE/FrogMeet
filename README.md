@@ -137,6 +137,26 @@ npm run dev
 
 ---
 
+## 🚀 Deployment
+
+To deploy FrogMeet for production, you must host the **Frontend** and **Backend (Signaling Server)** separately. 
+Serverless platforms (like Vercel) are not suitable for the backend because they don't support Socket.IO (WebSockets) properly.
+
+### 1. Deploy the Backend (Render / Railway)
+1. Deploy the `server/` directory to a Node.js hosting platform like [Render](https://render.com/) or [Railway](https://railway.app/).
+2. Set the build command to `npm install && npm run build` and the start command to `npm start`.
+3. In your backend environment variables, add:
+   - `CLIENT_URL`: The URL of your deployed frontend (e.g., `https://frog-meet.vercel.app`). *Note: Do not include a trailing slash (`/`) at the end.*
+
+### 2. Deploy the Frontend (Vercel / Netlify)
+1. Deploy the `client/` directory to [Vercel](https://vercel.com/) or Netlify.
+2. The project contains a `vercel.json` file which automatically handles React Router SPA rewrites.
+3. In your frontend environment variables (Settings -> Environment Variables), add:
+   - `VITE_SERVER_URL`: The live URL of your deployed backend (e.g., `https://frogmeet.onrender.com`).
+   *Important: Make sure you apply this to the **Production** environment, and then trigger a **Redeploy** on Vercel so the changes take effect!*
+
+---
+
 ## Current Limitations
 
 As FrogMeet is under active development, note the following:
