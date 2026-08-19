@@ -14,10 +14,12 @@ import {
   Share,
   ArrowLeft,
   X,
-  Send
+  Send,
+  Pencil
 } from "lucide-react";
 
 import { socket } from "../socket";
+import Whiteboard from "../components/Whiteboard";
 
 type MeetingState = {
   name?: string;
@@ -101,6 +103,7 @@ export default function MeetingPage() {
   
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<'chat' | 'participants'>('chat');
+  const [isWhiteboardOpen, setIsWhiteboardOpen] = useState(false);
 
   const name = state?.name ?? "Guest";
 
@@ -241,8 +244,28 @@ export default function MeetingPage() {
       }
     };
 
+    const handleUserDisconnected = (userId: string) => {
+      console.log("User disconnected:", userId);
+      
+      if (peerConnectionsRef.current[userId]) {
+        peerConnectionsRef.current[userId].close();
+        delete peerConnectionsRef.current[userId];
+      }
+      
+      setRemoteStreams((prev) => {
+        const newStreams = { ...prev };
+        delete newStreams[userId];
+        return newStreams;
+      });
+      
+      if (pendingCandidatesRef.current[userId]) {
+        delete pendingCandidatesRef.current[userId];
+      }
+    };
+
     socket.on("connect", handleConnect);
     socket.on("user-joined", handleUserJoined);
+    socket.on("user-disconnected", handleUserDisconnected);
     socket.on("offer", handleOffer);
     socket.on("answer", handleAnswer);
     socket.on("ice-candidate", handleIceCandidate);
@@ -254,6 +277,7 @@ export default function MeetingPage() {
     return () => {
       socket.off("connect", handleConnect);
       socket.off("user-joined", handleUserJoined);
+      socket.off("user-disconnected", handleUserDisconnected);
       socket.off("offer", handleOffer);
       socket.off("answer", handleAnswer);
       socket.off("ice-candidate", handleIceCandidate);
@@ -420,10 +444,26 @@ export default function MeetingPage() {
       {/* Main Content Area */}
       <div className="flex flex-1 min-h-0 w-full p-4 gap-6">
         
-        {/* Video Grid */}
-        <section className="flex-1 relative z-0 flex items-center justify-center overflow-hidden">
-          {renderGrid()}
-        </section>
+        {/* Video Grid or Whiteboard */}
+        {isWhiteboardOpen ? (
+          <div className="flex-1 flex gap-4 min-h-0 h-full overflow-hidden">
+            {/* Whiteboard Workspace */}
+            <section className="flex-1 relative z-0 flex items-center justify-center bg-[#F4F0E6] overflow-hidden">
+              <Whiteboard />
+            </section>
+            
+            {/* Mini Video Strip */}
+            <aside className="w-48 sm:w-64 flex flex-col gap-4 overflow-y-auto pr-2 pb-2 h-full z-10 shrink-0">
+               {allParticipants.map(p => (
+                 <ParticipantVideo key={p.id} participant={p} className="w-full aspect-video rounded-2xl shrink-0" />
+               ))}
+            </aside>
+          </div>
+        ) : (
+          <section className="flex-1 relative z-0 flex items-center justify-center overflow-hidden">
+            {renderGrid()}
+          </section>
+        )}
 
         {/* Sidebar */}
         {isSidebarOpen && (
@@ -558,6 +598,16 @@ export default function MeetingPage() {
            >
              <MessageSquare size={24} />
            </button>
+
+           <button 
+             onClick={() => setIsWhiteboardOpen(!isWhiteboardOpen)}
+             className={`flex h-12 w-12 sm:h-14 sm:w-14 shrink-0 items-center justify-center transition-all border-[3px] border-black active:shadow-none active:translate-x-1 active:translate-y-1 ${isWhiteboardOpen ? 'bg-[#0055FF] text-white shadow-none translate-x-1 translate-y-1' : 'bg-[#F4F0E6] hover:bg-black hover:text-white text-black shadow-[4px_4px_0_0_rgba(0,0,0,1)]'}`}
+             title="Toggle Whiteboard"
+           >
+             <Pencil size={24} />
+           </button>
+
+           <div className="w-[4px] h-10 bg-black mx-2 shrink-0"></div>
 
            <button className="flex h-12 w-12 sm:h-14 sm:w-14 shrink-0 items-center justify-center bg-[#F4F0E6] hover:bg-black hover:text-white text-black border-[3px] border-black shadow-[4px_4px_0_0_rgba(0,0,0,1)] active:shadow-none active:translate-x-1 active:translate-y-1 transition-all">
              <MoreVertical size={24} />

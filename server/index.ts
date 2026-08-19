@@ -87,7 +87,16 @@ io.on("connection", (socket) => {
     io.to(target).emit("ice-candidate", { sender: socket.id, candidate });
   });
 
-  // E. DISCONNECT
+  // E. DISCONNECTING
+  socket.on("disconnecting", () => {
+    for (const room of socket.rooms) {
+      if (room !== socket.id) {
+        socket.to(room).emit("user-disconnected", socket.id);
+      }
+    }
+  });
+
+  // F. DISCONNECT
   socket.on("disconnect", () => {
     console.log(
       "User disconnected:",
