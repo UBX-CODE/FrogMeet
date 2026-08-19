@@ -34,7 +34,9 @@ const ParticipantVideo = ({ participant, className = "" }: { participant: any, c
           playsInline
           muted={participant.isLocal}
           ref={(el) => {
-            if (el && participant.stream) el.srcObject = participant.stream;
+            if (el && participant.stream && el.srcObject !== participant.stream) {
+              el.srcObject = participant.stream;
+            }
           }}
           className={`h-full w-full object-cover ${participant.isLocal ? 'scale-x-[-1]' : ''}`}
         />
@@ -90,6 +92,7 @@ export default function MeetingPage() {
 
   const streamRef = useRef<MediaStream | null>(null);
   const peerConnectionsRef = useRef<Record<string, RTCPeerConnection>>({});
+  const pendingCandidatesRef = useRef<Record<string, RTCIceCandidateInit[]>>({});
 
   const [isMicOn, setIsMicOn] = useState(state?.isMicOn ?? true);
   const [isCameraOn, setIsCameraOn] = useState(state?.isCameraOn ?? true);
@@ -120,10 +123,16 @@ export default function MeetingPage() {
     };
 
     peerConnection.ontrack = (event) => {
-      setRemoteStreams((prev) => ({
-        ...prev,
-        [targetUserId]: event.streams[0],
-      }));
+      setRemoteStreams((prev) => {
+        const stream = event.streams && event.streams.length > 0 
+          ? event.streams[0] 
+          : new MediaStream([event.track]);
+          
+        return {
+          ...prev,
+          [targetUserId]: stream,
+        };
+      });
     };
 
     peerConnectionsRef.current[targetUserId] = peerConnection;
@@ -171,6 +180,14 @@ export default function MeetingPage() {
       });
 
       await peerConnection.setRemoteDescription(offer);
+      
+      // Process any queued ICE candidates for this sender
+      if (pendingCandidatesRef.current[sender]) {
+        for (const candidate of pendingCandidatesRef.current[sender]) {
+          await peerConnection.addIceCandidate(new RTCIceCandidate(candidate)).catch(console.error);
+        }
+        pendingCandidatesRef.current[sender] = [];
+      }
 
       const answer = await peerConnection.createAnswer();
       await peerConnection.setLocalDescription(answer);
@@ -185,17 +202,32 @@ export default function MeetingPage() {
       const peerConnection = peerConnectionsRef.current[sender];
       if (peerConnection) {
         await peerConnection.setRemoteDescription(answer);
+        
+        // Process any queued ICE candidates for this sender
+        if (pendingCandidatesRef.current[sender]) {
+          for (const candidate of pendingCandidatesRef.current[sender]) {
+            await peerConnection.addIceCandidate(new RTCIceCandidate(candidate)).catch(console.error);
+          }
+          pendingCandidatesRef.current[sender] = [];
+        }
       }
     };
 
     const handleIceCandidate = async ({ sender, candidate }: { sender: string; candidate: RTCIceCandidateInit }) => {
       const peerConnection = peerConnectionsRef.current[sender];
-      if (peerConnection) {
+      
+      if (peerConnection && peerConnection.remoteDescription) {
         try {
           await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
         } catch (e) {
           console.error("Error adding received ice candidate", e);
         }
+      } else {
+        // Queue candidates if the remote description isn't set yet (prevent InvalidStateError)
+        if (!pendingCandidatesRef.current[sender]) {
+          pendingCandidatesRef.current[sender] = [];
+        }
+        pendingCandidatesRef.current[sender].push(candidate);
       }
     };
 
