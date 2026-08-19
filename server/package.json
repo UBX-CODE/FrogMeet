@@ -17,7 +17,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsx watch index.ts"
+    "dev": "tsx watch index.ts",
+    "build": "tsc --outDir dist --module commonjs --moduleResolution node",
+    "start": "node dist/index.js"
   },
   "keywords": [],
   "author": "",

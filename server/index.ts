@@ -9,12 +9,15 @@ const app = express();
 // 2. HTTP server create
 const server = http.createServer(app);
 
+// CLIENT_URL = your Vercel frontend URL (set in Railway env vars)
+const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:5173";
+
 // 3. Express CORS configuration
-app.use(cors({origin: "http://localhost:5173",}));
+app.use(cors({ origin: CLIENT_URL }));
 
 // 4. Socket.IO server create
 const io = new Server(server, {
-  cors: {origin: "http://localhost:5173", methods: ["GET", "POST"]},
+  cors: { origin: CLIENT_URL, methods: ["GET", "POST"] },
 });
 
 // 5. Basic test route
